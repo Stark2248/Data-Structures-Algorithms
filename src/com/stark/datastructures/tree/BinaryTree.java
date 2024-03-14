@@ -1,7 +1,6 @@
 package com.stark.datastructures.tree;
 
-import java.util.Deque;
-import java.util.Stack;
+import java.util.*;
 
 public class BinaryTree {
     private TreeNode root;
@@ -176,5 +175,242 @@ public class BinaryTree {
         }
         return max;
     }
+
+
+    public int maxBinaryTreeIterative(TreeNode root){
+        TreeNode temp;
+        int max=Integer.MIN_VALUE;
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            temp = queue.poll();
+            if(max < temp.getVal()){
+                max = temp.getVal();
+            }
+            if(temp.left != null){
+                queue.offer(temp.left);
+            }
+            if(temp.right != null){
+                queue.offer(temp.right);
+            }
+        }
+        queue.poll();
+        return max;
+    }
+
+
+    public int findInBinaryTreeRecursive(TreeNode root, int val){
+        int temp;
+        if(root == null){
+            return 0;
+        }else{
+            if(val == root.getVal()){
+                return 1;
+            }
+            else{
+                temp = findInBinaryTreeRecursive(root.left,val);
+                if(temp != 0)
+                    return temp;
+                else
+                    return findInBinaryTreeRecursive(root.right,val);
+            }
+        }
+    }
+
+    public int findInBinaryTreeIterative(TreeNode root, int val){
+        TreeNode treeNode;
+        Queue<TreeNode> queue =new ArrayDeque<>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            treeNode = queue.poll();
+            if(val == treeNode.getVal())
+                return 1;
+            if(treeNode.left!=null){
+                queue.offer(treeNode.left);
+            }
+            if(treeNode.right!=null){
+                queue.offer(treeNode.right);
+            }
+        }
+        return 0;
+    }
+
+    public void insertInBinary(TreeNode root, int val){
+        TreeNode temp;
+        TreeNode newNode;
+        newNode =new TreeNode(val);
+        newNode.right = newNode.left = null;
+        if(root == null){
+            root = newNode;
+            return;
+        }
+        Queue<TreeNode> queue =new ArrayDeque<>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            temp = queue.poll();
+            if(temp.left != null){
+                queue.offer(temp.left);
+            }else{
+                temp.left = newNode;
+                return;
+            }
+            if(temp.right != null){
+                queue.offer(temp.right);
+            }else{
+                temp.right = newNode;
+                return;
+            }
+        }
+    }
+
+    public int sizeOfBinaryTree(TreeNode root){
+        if(root == null)
+            return 0;
+        else
+            return sizeOfBinaryTree(root.left) + 1 + sizeOfBinaryTree(root.right);
+    }
+
+    public int sizeOfBinaryTreeIterative(TreeNode root){
+        int count = 0;
+        if(root == null){
+            return count;
+        }
+        TreeNode temp;
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            temp = queue.poll();
+            count++;
+            if(temp.left != null){
+                queue.offer(temp.left);
+            }
+            if(temp.right != null){
+                queue.offer(temp.right);
+            }
+        }
+        return count;
+    }
+
+    public void levelorderreversetraversal(TreeNode root){
+        TreeNode temp;
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        Stack<TreeNode> stack = new Stack<>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            temp = queue.poll();
+            if(temp.left != null){
+                queue.offer(temp.left);
+            }
+            if(temp.right != null){
+                queue.offer(temp.right);
+            }
+            stack.push(temp);
+        }
+        while(!stack.isEmpty()){
+            System.out.print(stack.pop().getVal()+" ");
+        }
+    }
+
+
+    public int heightOfBinafryTreeRecursive(TreeNode root){
+        int leftHeight, rightHeight;
+        if(root == null){
+            return 0;
+        }else{
+            leftHeight = heightOfBinafryTreeRecursive(root.left);
+            rightHeight = heightOfBinafryTreeRecursive(root.right);
+            if(leftHeight > rightHeight)
+                return leftHeight + 1;
+            else
+                return rightHeight + 1;
+        }
+    }
+
+    public int heightOfBinaryTreeIterative(TreeNode root){
+        if(root == null){
+            return 0;
+        }
+        int level = 0;
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.offer(root);
+        while(true){
+            int nodecount = queue.size();
+            if(nodecount == 0){
+                return level;
+            }
+            level++;
+            while(nodecount > 0){
+                TreeNode node = queue.poll();
+                if(node.left != null){
+                    queue.offer(node.left);
+                }
+                if(node.right != null){
+                    queue.offer(node.right);
+                }
+                nodecount --;
+            }
+        }
+    }
+
+    public int numberOfleaves(TreeNode root){
+        if(root == null)
+            return 0;
+        if(root.left == null && root.right == null)
+            return 1;
+        int count = 0;
+        TreeNode temp;
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            temp = queue.poll();
+            if(temp.left == null && temp.right == null){
+                count++;
+            }
+            if(temp.left != null){
+                queue.offer(temp.left);
+            }
+            if(temp.right != null){
+                queue.offer(temp.right);
+            }
+        }
+        return count;
+    }
+
+    public int findlevelwithmaxsum(TreeNode root){
+        if(root == null)
+            return 0;
+        TreeNode temp;
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        int level = 0, maxLevel = 0, currentSum = 0, maxSum = 0;
+        queue.offer(root);
+        TreeNode node =new TreeNode(0);
+        node.right = node.left = null;
+        queue.offer(node);
+        while(!queue.isEmpty()){
+            temp = queue.poll();
+            if(temp == node){
+                if(currentSum > maxSum){
+                    maxSum = currentSum;
+                    maxLevel = level;
+                }
+                currentSum = 0;
+                if(!queue.isEmpty()){
+                    queue.offer(node);
+                }
+                level++;
+            }else{
+                currentSum += temp.getVal();
+                if(temp.left != null){
+                    queue.offer(temp.left);
+                }
+                if(temp.right != null){
+                    queue.offer(temp.right);
+                }
+            }
+        }
+        return maxLevel;
+    }
+
+
 
 }
